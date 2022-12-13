@@ -1,5 +1,6 @@
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { GetServerSideProps } from 'next';
 
 export default function Home() {
   const { user } = useUser();
@@ -12,23 +13,23 @@ export default function Home() {
   );
 }
 
-export const getServerSideProps = withPageAuthRequired();
+// export const getServerSideProps = withPageAuthRequired();
 
-// export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-//   const session = await getSession(req, res);
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getSession(req, res);
 
-//   console.log(session?.accessToken);
+  console.log(session?.accessToken);
 
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: '/api/auth/login',
-//         permanent: false,
-//       },
-//     };
-//   }
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/api/auth/login',
+        permanent: false,
+      },
+    };
+  }
 
-//   return {
-//     props: {},
-//   };
-// };
+  return {
+    props: {},
+  };
+};
