@@ -1,13 +1,16 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Directive, Field, ID, ObjectType } from '@nestjs/graphql';
 import { Purchase } from './purchase';
 
-@ObjectType()
-class Customer {
-  @Field(() => ID)
+// As entidades Customer (Purchases) e Student (Classroom) são a mesma coisa para o frontend => User
+@ObjectType('User')
+// Chave em comum entre o Customer (Purchases) e Student (Classroom)
+@Directive('@key(fields: "authUserId")')
+export class Customer {
   id: string;
+
+  @Field(() => ID)
+  authUserId: string;
 
   @Field(() => [Purchase])
   purchases: Purchase[];
 }
-
-export { Customer };

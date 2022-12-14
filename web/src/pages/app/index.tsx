@@ -13,23 +13,33 @@ export default function Home() {
   );
 }
 
-// export const getServerSideProps = withPageAuthRequired();
+export const getServerSideProps = withPageAuthRequired({
+  getServerSideProps: async ({ req, res }) => {
+    const session = await getSession(req, res);
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const session = await getSession(req, res);
+    console.log(session?.accessToken);
 
-  console.log(session?.accessToken);
-
-  if (!session) {
     return {
-      redirect: {
-        destination: '/api/auth/login',
-        permanent: false,
-      },
+      props: {},
     };
-  }
+  },
+});
 
-  return {
-    props: {},
-  };
-};
+// export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+//   const session = await getSession(req, res);
+
+//   console.log(session?.accessToken);
+
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: '/api/auth/login',
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   return {
+//     props: {},
+//   };
+// };

@@ -35,3 +35,49 @@
 [ ] Query das minhas matrículas
 [ ] Query de produtos
 [ ] Mutation de realizar matrícula
+
+---
+
+## Kafka
+
+- Purchase -> Kafka (Banco de dados)
+- Classroom <- Kafka (Compras)
+- Serviço 2 <- Kafka (Compras)
+- Serviço 3 <- Kafka (Compras)
+- Publish/Subscribe
+- Particionamento
+
+## Apollo Federation
+
+### Backend
+
+- Purchases: http://localhost:3333/graphql -> https://purchases.rocketseat.com
+- Classroom: http://localhost:3334/graphql -> https://classroom.rocketseat.com
+
+### Frontend
+
+- Web: precisa entender para qual endereço irá enviar a requisição (de Purchases ou Classroom)
+
+### (Apollo) Gateway
+
+- O Frontend acessa um único endereço e o Gateway é responsável em enviar a requisição para o Serviço correto
+
+- Gateway http://localhost:3332/ -> PROXY
+- Purchases: http://localhost:3333/graphql -> https://purchases.rocketseat.com
+- Classroom: http://localhost:3334/graphql -> https://classroom.rocketseat.com
+
+```
+# http://localhost:3333/graphql
+query {
+  me {
+    purchases {
+      id
+    }
+
+    # http://localhost:3334/graphql
+    enrollments {
+      id
+    }
+  }
+}
+```

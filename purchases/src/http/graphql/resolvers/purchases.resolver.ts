@@ -6,12 +6,13 @@ import {
   Query,
   ResolveField,
   Resolver,
+  ResolveReference,
 } from '@nestjs/graphql';
-import { AuthorizationGuard } from 'src/http/auth/authorization.guard';
-import { AuthUser, CurrentUser } from 'src/http/auth/current-user';
-import { CustomersService } from 'src/services/customers.service';
-import { ProductsService } from 'src/services/products.service';
-import { PurchasesService } from 'src/services/purchases.service';
+import { CustomersService } from '../../../services/customers.service';
+import { ProductsService } from '../../../services/products.service';
+import { PurchasesService } from '../../../services/purchases.service';
+import { AuthorizationGuard } from '../../auth/authorization.guard';
+import { AuthUser, CurrentUser } from '../../auth/current-user';
 import { CreatePurchaseInput } from '../inputs/create-purchase.input';
 import { Purchase } from '../models/purchase';
 
@@ -22,6 +23,11 @@ export class PurchasesResolver {
     private productsService: ProductsService,
     private customersService: CustomersService,
   ) {}
+
+  @ResolveReference()
+  resolveReference(reference: { authUserId: string }) {
+    return this.customersService.getCustomerByAuthUserId(reference.authUserId);
+  }
 
   @Query(() => [Purchase])
   @UseGuards(AuthorizationGuard)
@@ -42,7 +48,7 @@ export class PurchasesResolver {
   ) {
     // console.log(user.sub);
 
-    let customer = await this.customersService.findCustomerByAuthUserId(
+    let customer = await this.customersService.getCustomerByAuthUserId(
       user.sub,
     );
 
